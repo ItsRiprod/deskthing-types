@@ -1,0 +1,33 @@
+{
+  "name": "@deskthing/types",
+  "version": "0.10.6",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "The global types for DeskThing",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "watch": "tsc -w"
+  },
+  "type": "module",
+  "keywords": [
+    "Types",
+    "DeskThing",
+    "DeskThing",
+    "Types"
+  ],
+  "homepage": "https://github.com/itsriprod/deskthing-types#readme",
+  "bugs": {
+    "url": "https://github.com/itsriprod/deskthing-types/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsriprod/deskthing-types.git"
+  },
+  "license": "ISC",
+  "author": "Riprod",
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "typescript": "^5.7.3"
+  }
+}
