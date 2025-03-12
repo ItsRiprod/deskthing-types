@@ -1,102 +1,122 @@
+export enum SETTING_TYPES {
+  BOOLEAN = 'boolean',
+  NUMBER = 'number',
+  STRING = 'string',
+  RANGE = 'range',
+  SELECT = 'select',
+  MULTISELECT = 'multiselect',
+  LIST = 'list',
+  RANKED = 'ranked',
+  COLOR = 'color'
+}
+
 
 export type SettingsNumber = {
-  value: number;
-  type: "number";
-  min: number;
-  max: number;
-  label: string;
-  description?: string;
+  disabled?: boolean
+  type: SETTING_TYPES.NUMBER
+  value: number
+  min: number
+  max: number
+  label: string
+  description?: string
 }
 
 export type SettingsBoolean = {
-  value: boolean;
-  type: "boolean";
-  label: string;
-  description?: string;
+  disabled?: boolean
+  type: SETTING_TYPES.BOOLEAN
+  value: boolean
+  label: string
+  description?: string
 }
 
 export type SettingsRange = {
-  value: number;
-  type: "range";
-  label: string;
-  min: number;
-  max: number;
-  step?: number;
-  description?: string;
+  disabled?: boolean
+  type: SETTING_TYPES.RANGE
+  value: number
+  label: string
+  min: number
+  max: number
+  step?: number
+  description?: string
 }
 
 export type SettingsString = {
-  value: string;
-  type: "string";
-  label: string;
-  maxLength?: number;
-  description?: string;
+  disabled?: boolean
+  type: SETTING_TYPES.STRING
+  value: string
+  label: string
+  maxLength?: number
+  description?: string
 }
 
 export type SettingsSelect = {
-  value: string;
-  type: "select";
-  label: string;
-  description?: string;
-  placeholder?: string;
-  options: SettingOption[];
+  disabled?: boolean
+  type: SETTING_TYPES.SELECT
+  value: string
+  label: string
+  description?: string
+  placeholder?: string
+  options: SettingOption[]
 }
 
 export type SettingOption = {
-  label: string;
-  value: string;
-};
+  label: string
+  value: string
+}
 
 export type SettingsRanked = {
-  value: string[];
-  type: "ranked";
-  label: string;
-  description?: string;
-  options: SettingOption[];
+  disabled?: boolean
+  type: SETTING_TYPES.RANKED
+  value: string[]
+  label: string
+  description?: string
+  options: SettingOption[]
 }
 
 /**
  * Not fully implemented yet!
  */
 export type SettingsList = {
-  value: string[];
-  placeholder?: string;
-  maxValues?: number;
-  orderable?: boolean;
-  unique?: boolean;
-  type: "list";
-  label: string;
-  description?: string;
-  options: SettingOption[];
+  disabled?: boolean
+  type: SETTING_TYPES.LIST
+  value: string[]
+  placeholder?: string
+  maxValues?: number
+  orderable?: boolean
+  unique?: boolean
+  label: string
+  description?: string
+  options: SettingOption[]
 }
 
 export type SettingsMultiSelect = {
-  value: string[];
-  type: "multiselect";
-  label: string;
-  description?: string;
-  placeholder?: string;
-  options: SettingOption[];
+  disabled?: boolean
+  type: SETTING_TYPES.MULTISELECT
+  value: string[]
+  label: string
+  description?: string
+  placeholder?: string
+  options: SettingOption[]
 }
 
 export type SettingsColor = {
-  type: "color";
-  value: string;
-  label: string;
-  description?: string;
-  placeholder?: string;
+  disabled?: boolean
+  type: SETTING_TYPES.COLOR
+  value: string
+  label: string
+  description?: string
 }
 
 export type SettingsType =
-  | SettingsNumber
-  | SettingsBoolean
-  | SettingsString
-  | SettingsSelect
-  | SettingsMultiSelect
-  | SettingsRange
-  | SettingsRanked
-  | SettingsList
-  | SettingsColor;
+  | ({ type: SETTING_TYPES.NUMBER } & SettingsNumber)
+  | ({ type: SETTING_TYPES.BOOLEAN } & SettingsBoolean)
+  | ({ type: SETTING_TYPES.STRING } & SettingsString)
+  | ({ type: SETTING_TYPES.SELECT } & SettingsSelect)
+  | ({ type: SETTING_TYPES.MULTISELECT } & SettingsMultiSelect)
+  | ({ type: SETTING_TYPES.RANGE } & SettingsRange)
+  | ({ type: SETTING_TYPES.RANKED } & SettingsRanked)
+  | ({ type: SETTING_TYPES.LIST } & SettingsList)
+  | ({ type: SETTING_TYPES.COLOR } & SettingsColor)
 
 export type AppSettings = Record<string, SettingsType>;
 

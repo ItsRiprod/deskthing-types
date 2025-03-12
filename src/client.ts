@@ -1,5 +1,29 @@
-import { EventMode } from "./actions";
-import { AppManifest } from "./utils";
+import { EventMode } from "./actions.js";
+import { AppManifest } from "./utils.js";
+
+export enum ClientConnectionMethod {
+  Unknown,
+  LAN,
+  Localhost,
+  ADB,
+  NDIS,
+  Bluetooth,
+  Internet
+}
+
+export enum ClientPlatformIDs {
+  Unknown,
+  Desktop,
+  Tablet,
+  Iphone,
+  CarThing
+}
+
+export type ClientDeviceType = {
+  method: ClientConnectionMethod;
+  id: ClientPlatformIDs;
+  name: string;
+} 
 
 /**
  * @module deskthing/client
@@ -13,13 +37,14 @@ export interface ClientManifest {
   description: string;
   builtFor: string;
   reactive: boolean;
+  repository: string;
   author: string;
   version: string;
   version_code: number;
   compatible_server: number[];
   port: number;
   ip: string;
-  device_type: { id: number; name: string };
+  device_type: ClientDeviceType
 }
 
 /**
@@ -113,9 +138,23 @@ export type App = {
   name: string;
   enabled: boolean;
   running: boolean;
+  timeStarted: number
   prefIndex: number;
+  meta?: AppMeta
   manifest?: AppManifest;
 };
+
+/**
+ * Meta information about the app to be used by the server when parsing
+ */
+export interface AppMeta {
+  version: string
+  verified: boolean
+  verifiedManifest: boolean
+  updateAvailable: boolean
+  updateChecked: boolean
+  updateAvailableVersion?: string
+}
 
 /**
  * @module deskthing/client
