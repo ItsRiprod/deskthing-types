@@ -1,4 +1,15 @@
 /**
+ * This only exists on the server / client during transit. Apps do not interact with this
+ * @package DeskThingServer + DeskThingClient
+ */
+export type MappingProfile = {
+  mapping: ButtonMappingStructure
+  actions: Action[] | null;
+  keys: Key[] | null;
+  profileId: string
+};
+
+/**
  * @deprecated - use {@link EventMode} instead
  */
 export enum EventFlavor {
@@ -67,12 +78,15 @@ export type Action = {
   tag?: "nav" | "media" | "basic";
 };
 
+/**
+ * A reference to an action
+ */
 export type ActionReference = {
-    id: string
-    value?: string
-    enabled: boolean
-    source?: string
-  }
+  id: string;
+  value?: string;
+  enabled?: boolean;
+  source: string;
+};
 
 export enum EventMode {
   KeyUp,
@@ -97,4 +111,47 @@ export type Key = {
   enabled: boolean; // Whether or not the app associated with the key is enabled
   version_code?: number; // (depreciated) The version of the server the action is compatible with
   modes: EventMode[]; // The Modes of the key
+};
+
+export type KeyReference = {
+  id: string;
+  /** Whether or not the key is currently enabled */
+  enabled?: boolean;
+  mode?: EventMode;
+  source: string;
+};
+
+/**
+ * Combination of both a key and an action
+ * Is used for storing mapping information
+ */
+export type Button = {
+  /**
+   *  The mode of the button
+   *  @see {@link EventMode}
+   */
+  mode: EventMode;
+  /** The action ID to be triggered */
+  action: ActionReference;
+  /** The key ID to be triggered */
+  key: KeyReference;
+  /** The profile the button is associated with */
+  profile?: string;
+};
+
+/**
+ * Custom button mappings
+ * @since 0.11.0
+ */
+export type ButtonMappingStructure = {
+  [actionId: string]: {
+    [Mode in EventMode]?: ActionReference;
+  };
+};
+
+type valueTypes = string | number | boolean;
+/** The data from an action being triggered */
+export type ActionCallback = {
+  id: string;
+  value: valueTypes;
 };

@@ -1,9 +1,10 @@
 {
   "name": "@deskthing/types",
-  "version": "0.10.8",
+  "version": "0.10.14",
   "description": "TypeScript types and interfaces for DeskThing",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "files": [
     "dist"
   ],
@@ -28,7 +29,7 @@
   "license": "ISC",
   "author": "Riprod",
   "devDependencies": {
-    "typescript": "^4.9.0"
+    "typescript": "^5.8.2"
   },
   "publishConfig": {
     "access": "public"
