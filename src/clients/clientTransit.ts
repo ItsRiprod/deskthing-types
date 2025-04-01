@@ -5,7 +5,8 @@ import { LOGGING_LEVELS, Log } from "../meta/logging.js"
 import { MusicEventPayloads, SongData } from "../meta/music.js"
 import { TimePayload } from "../meta/time.js"
 import { GenericTransitData } from "../meta/transit.js"
-import { ClientManifest } from "./clientData.js"
+import { ClientConfigurations, ClientManifest } from "./clientData.js"
+import { ClientPreferences } from "./clientDepreciated.js"
 
 /**
  * You generally do not have to worry about this
@@ -104,15 +105,26 @@ export type DeviceToClientCore = {
   );
 
 export enum DEVICE_DESKTHING {
-  MANIFEST = "manifest",
+  /** Triggering an action */
   ACTION = "action",
+  /** General set payload */
   SET = "set",
+  /** Request to ping the server */
   PING = "ping",
+  /** Response from a ping */
   PONG = "pong",
-  SETTINGS = "settings",
+  /** Logging from the client */
   LOG = "log",
+  /** Updates regarding the current view */
   VIEW = "view",
+  /** Payloads intended for apps */
   APP_PAYLOAD = "app_payload",
+  /** Getters / setters for the current manifest */
+  MANIFEST = "manifest",
+  /** Getters / setters for the current settings */
+  SETTINGS = "settings",
+  /** Getters / setters for the current configuration */
+  CONFIG = "config",
 }
 
 /**
@@ -151,6 +163,17 @@ export type DeviceToDeskthingData = { deviceId?: string } & (
           type: DEVICE_DESKTHING.VIEW;
           request?: "change";
           payload: { currentApp: string; previousApp: string };
+        }
+      | {
+          type: DEVICE_DESKTHING.CONFIG;
+          request: "set";
+          payload: ClientConfigurations
+        }
+      | {
+          type: DEVICE_DESKTHING.CONFIG;
+          request: "get";
+          /** Profile ID */
+          payload?: string
         }
     ))
   | MusicEventPayloads

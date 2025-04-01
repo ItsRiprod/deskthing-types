@@ -18,6 +18,8 @@ export enum DESKTHING_DEVICE {
   /** Will never be emitted to your client. Only exists on device */
   MAPPINGS = "button_mappings",
   /** Will never be emitted to your client. Only exists on device */
+  CONFIG = "configuration",
+  /** Will never be emitted to your client. Only exists on device */
   GET = "get",
   /** Will never be emitted to your client. Only exists on device */
   ERROR = "error",
@@ -45,6 +47,11 @@ export type DeskThingToDeviceCore =
       type: DESKTHING_DEVICE.MAPPINGS;
       request?: string;
       payload: MappingProfile;
+    }
+  | {
+      type: DESKTHING_DEVICE.CONFIG;
+      request: 'set';
+      payload: ClientConfigurations;
     }
   | { type: DESKTHING_DEVICE.GET; request: "manifest"; payload?: string }
   | { type: DESKTHING_DEVICE.ERROR; request?: string; payload?: string }
