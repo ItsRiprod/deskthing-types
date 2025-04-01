@@ -75,8 +75,9 @@ export enum SongEvent {
  * @since 0.11.0
  */
 export type MusicEventPayloads = { app: 'music' } & (
-  | { request: AUDIO_REQUESTS.SONG; type: SongEvent.GET; payload?: undefined }
-  | { request: AUDIO_REQUESTS.REFRESH; type: SongEvent.GET; payload?: undefined }
+  // payload = force refresh
+  | { request: AUDIO_REQUESTS.SONG; type: SongEvent.GET; payload?: boolean }
+  | { request: AUDIO_REQUESTS.REFRESH; type: SongEvent.GET; payload?: boolean }
   | { request: AUDIO_REQUESTS.NEXT; type: SongEvent.SET; payload?: string }
   | { request: AUDIO_REQUESTS.PREVIOUS; type: SongEvent.SET; payload?: string }
   | { request: AUDIO_REQUESTS.FAST_FORWARD; type: SongEvent.SET; payload?: number }

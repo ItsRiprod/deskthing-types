@@ -113,7 +113,7 @@ export type Client = {
   manifest?: ClientManifest;
 };
 
-type BaseClientDeviceType = {
+type BaseClientType = {
   /**The id of the platform (for images) */
   id: ClientPlatformIDs;
   /**The name of the platform */
@@ -124,19 +124,28 @@ type BaseClientDeviceType = {
   port: number;
 };
 
-type ADBClientDeviceType = BaseClientDeviceType & {
+export type ADBClientType = BaseClientType & {
   /**The method the device is connected via */
   method: ClientConnectionMethod.ADB;
   /** The ID of the device as seen by ADB  */
   adbId: string;
+
+  offline?: boolean
+
+  app_version?: string
+  usid?: string
+  mac_bt?: string
+  services?: {
+    [key: string]: boolean;
+  }
 };
 
-type DefaultClientDeviceType = BaseClientDeviceType & {
+export type DefaultClientType = BaseClientType & {
   method: Exclude<ClientConnectionMethod, ClientConnectionMethod.ADB>;
 };
 
 // Ensure that ADB connections have the adbId in there too
-export type ClientDeviceType = ADBClientDeviceType | DefaultClientDeviceType;
+export type ClientDeviceType = ADBClientType | DefaultClientType;
 
 /**
  * @module deskthing/client
