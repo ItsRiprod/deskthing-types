@@ -37,7 +37,7 @@ export enum DESKTHING_DEVICE {
 /**
  * All data that is being sent from the DeskThing Server to the Client
  */
-export type DeskThingToDeviceCore =
+export type DeskThingToDeviceCore = { app: 'client' } & (
   | {
       type: DESKTHING_DEVICE.GLOBAL_SETTINGS;
       request?: string;
@@ -79,10 +79,11 @@ export type DeskThingToDeviceCore =
       type: DESKTHING_DEVICE.META_DATA;
       request?: string;
       payload: ClientMetaData;
-    };
+    }    
+)
 
 export type ClientMetaData = {
-  connectionId: string;
+  clientId: string;
   currentConfiguration?: ClientConfigurations;
   currentMapping?: MappingProfile;
 };

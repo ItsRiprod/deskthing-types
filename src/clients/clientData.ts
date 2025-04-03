@@ -22,6 +22,15 @@ export enum ClientPlatformIDs {
   CarThing,
 }
 
+export enum ConnectionState {
+  Connected,
+  Established,
+  Connecting,
+  Disconnecting,
+  Disconnected,
+  Failed,
+}
+
 /**
  * @module deskthing/client
  * @description
@@ -64,6 +73,7 @@ export type ClientManifest = {
   short_name: string;
   description: string;
   reactive: boolean;
+  connectionId?: string;
   repository: string;
   author: string;
   version: string;
@@ -87,31 +97,71 @@ export type ClientManifest = {
   compatible_server?: number[];
 };
 
+export enum ProviderCapabilities {
+  CONFIGURE = 0,
+  PING = 1,
+  COMMUNICATE = 2,
+}
+
+/** For use in transit. A tag to be added to a device that will track where it's connected to */
+export type ClientIdentifier = {
+  id: string;
+  /** What the provider is capable of doing */
+  capabilities?: ProviderCapabilities[];
+  method?: ClientConnectionMethod;
+  providerId: string;
+  active?: boolean;
+};
+
 /**
  * The client object that keeps track of connected clients
+ * For transit - should never be stored anywhere or sent anywhere but the client that owns it
  */
 export type Client = {
-  // static info
-  id: string;
-  hostname?: string;
-  headers?: Record<string, string>;
-  userAgent?: string;
-  currentProfileID?: string;
-  currentConfiguration?: ClientConfigurations;
+  /** The primary way of identifying the client */
+  clientId: string;
 
-  currentMappingID?: string;
+  currentConfiguration?: ClientConfigurations;
   currentMapping?: MappingProfile;
 
   // dynamic info
   currentApp?: string;
-  default_view?: string;
+  connectionState: ConnectionState;
 
   // connection info
-  connectionId: string;
-  connected: boolean;
-  timestamp: number;
+  /** A unique ID for the client. Only needed if connected */
+  identifiers: Record<string, ClientIdentifier>;
+  uptime?: number;
   manifest?: ClientManifest;
-};
+
+  /** @deprecated - use currentMapping.profileId directly */
+  default_view?: string;
+  /** @deprecated */
+  hostname?: string;
+  /** @deprecated */
+  headers?: Record<string, string>;
+  /** @deprecated */
+  userAgent?: string;
+
+  /** @deprecated - use currentConfiguration.profileId directly */
+  currentProfileID?: string;
+
+  /** @deprecated - use currentMapping.profileId directly */
+  currentMappingID?: string;
+} & (
+  | {
+      // The provider with the most capabilities
+      primaryProviderId?: string;
+      timestamp?: number;
+      connected: false;
+    }
+  | {
+      // The provider with the most capabilities
+      primaryProviderId: string;
+      connected: true;
+      timestamp: number;
+    }
+);
 
 type BaseClientType = {
   /**The id of the platform (for images) */
@@ -127,17 +177,17 @@ type BaseClientType = {
 export type ADBClientType = BaseClientType & {
   /**The method the device is connected via */
   method: ClientConnectionMethod.ADB;
-  /** The ID of the device as seen by ADB  */
+  /** The ID of the device as seen by ADB */
   adbId: string;
 
-  offline?: boolean
+  offline?: boolean;
 
-  app_version?: string
-  usid?: string
-  mac_bt?: string
+  app_version?: string;
+  usid?: string;
+  mac_bt?: string;
   services?: {
     [key: string]: boolean;
-  }
+  };
 };
 
 export type DefaultClientType = BaseClientType & {
