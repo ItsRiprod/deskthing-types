@@ -225,7 +225,7 @@ export type ClientConfigurations = {
  * Settings for configuring the screensaver behavior and appearance
  */
 export interface ScreensaverSettings {
-  version: number;
+  version: string;
   type: "black" | "logo" | "clock";
 }
 

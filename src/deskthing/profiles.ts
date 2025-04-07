@@ -18,10 +18,12 @@ export interface DeskThingProfile {
     enabled?: boolean
   
     // Client Information
+    /** @deprecated */
     clientConfigID?: string
     clientConfig?: ClientConfigurations
     
     // Mapping Information
+    /** @deprecated */
     mappingId?: string
     mapping?: MappingProfile
   
