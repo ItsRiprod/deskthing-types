@@ -56,6 +56,13 @@ export type AppManifest = {
   };
   template?: string; // Utility - only for the template to know what template was used
   
+  /** Whether or not there is a postinstall script. If there is, the program will run the postinstall script in a new process and any console.log messages will be displayed to the user. Once completed, the application will be run. This step is after the initial download and the user confirmation */
+  postinstall?: boolean;
+  /** Any justification / reason for the postinstall process happening */
+  postinstall_message?: string
+  /** Defaults to just using postinstall.js - can be used to specify with or without file extension (default to js)*/
+  postinstall_script?: string;
+
   /**@depreciated */
   version_code?: number;
   /**@depreciated */
