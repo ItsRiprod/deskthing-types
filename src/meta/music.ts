@@ -1,4 +1,61 @@
-export type SongData = {
+export type SongData = SongData11 | SongData10
+
+export enum SongAbilities {
+  LIKE = "like",
+  SHUFFLE = "shuffle",
+  REPEAT = "repeat",
+  PLAY = "play",
+  PAUSE = "pause",
+  STOP = "stop",
+  NEXT = "next",
+  PREVIOUS = "previous",
+  REWIND = "rewind",
+  FAST_FORWARD = "fast_forward",
+  CHANGE_VOLUME = "change_volume",
+  SET_OUTPUT = "set_output",
+}
+
+export type SongData11 = {
+  /** The version artifact of the songData */
+  version: 2
+  track_name: string;
+  album: string | null;
+  artist: string | null;
+  playlist: string | null;
+  playlist_id: string | null;
+  shuffle_state: boolean | null;
+  /** @depreciated use 'track' | 'all' | 'off' instead */
+  repeat_state: "off" | "all" | "track";
+  is_playing: boolean;
+  /** The app source of the data payload */
+  source: string
+  /** An array of possible abilities the source has */
+  abilities: SongAbilities[];
+  track_duration: number | null;
+  track_progress: number | null;
+  volume: number;
+  thumbnail: string | null;
+  device: string | null;
+  device_id: string | null;
+  id: string | null;
+  liked?: boolean;
+  color?: ThemeColor;
+
+  /** @depreciated use the tag system instead */
+  can_like?: boolean;
+  /** @depreciated use the tag system instead */
+  can_change_volume?: boolean;
+  /** @depreciated use the tag system instead */
+  can_set_output?: boolean;
+  /** @depreciated use the tag system instead */
+  can_fast_forward?: boolean;
+  /** @depreciated use the tag system instead */
+  can_skip?: boolean;
+};
+
+export type SongData10 = {
+  /** The version artifact of the songData */
+  version?: 1
   album: string | null;
   artist: string | null;
   playlist: string | null;
@@ -22,6 +79,8 @@ export type SongData = {
   liked?: boolean;
   color?: ThemeColor;
 };
+
+const abc = {} as SongData
 
 export type ThemeColor = {
   value: number[];
@@ -88,6 +147,6 @@ export type MusicEventPayloads = { app: 'music' } & (
   | { request: AUDIO_REQUESTS.SEEK; type: SongEvent.SET; payload: number }
   | { request: AUDIO_REQUESTS.LIKE; type: SongEvent.SET; payload: string | boolean }
   | { request: AUDIO_REQUESTS.VOLUME; type: SongEvent.SET; payload: number }
-  | { request: AUDIO_REQUESTS.REPEAT; type: SongEvent.SET; payload: "context" | "track" | "off" }
+  | { request: AUDIO_REQUESTS.REPEAT; type: SongEvent.SET; payload: "all" | "track" | "off" }
   | { request: AUDIO_REQUESTS.SHUFFLE; type: SongEvent.SET; payload: boolean }
 )
