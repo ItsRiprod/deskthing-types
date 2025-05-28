@@ -61,7 +61,7 @@ export type DeskThingToDeviceCore = { app: 'client' } & (
   | {
       type: DESKTHING_DEVICE.SETTINGS;
       request?: string;
-      payload?: AppSettings & { app?: string };
+      payload?: { settings: AppSettings; app: string }; 
     }
   | { type: DESKTHING_DEVICE.APPS; request?: string; payload?: App[] }
   | { type: DESKTHING_DEVICE.MUSIC; request?: string; payload?: SongData }

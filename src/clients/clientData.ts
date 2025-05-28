@@ -1,6 +1,5 @@
 import { App } from "../apps/appData.js";
 import {
-  ButtonMappingStructure,
   MappingProfile,
 } from "../deskthing/mappings.js";
 
@@ -12,6 +11,13 @@ export enum ClientConnectionMethod {
   NDIS,
   Bluetooth,
   Internet,
+}
+
+export enum PlatformIDs {
+  ADB = 'adb',
+  WEBSOCKET = 'websocket',
+  BLUETOOTH = 'bluetooth',
+  MAIN = 'main'
 }
 
 export enum ClientPlatformIDs {
@@ -31,91 +37,16 @@ export enum ConnectionState {
   Failed,
 }
 
-/**
- * @module deskthing/client
- * @description
- * Volume mode enum used for configuring volume control behavior
- * @see {@link ClientPreferences.volume}
- */
-export enum VolMode {
-  WHEEL = "wheel",
-  SLIDER = "slider",
-  BAR = "bar",
-}
-
-/**
- * @module deskthing/client
- * @description
- * View mode enum used for configuring display states
- * @see {@link ClientPreferences.appTrayState}
- * @see {@link MiniplayerSettings.state}
- */
-export enum ViewMode {
-  HIDDEN = "hidden",
-  PEEK = "peek",
-  FULL = "full",
-}
-
-export type ClientReference = {
-  id: string;
-  version?: string;
-};
-
-/**
- * @module deskthing/client
- * @description The Client Manifest file interface which holds details such as
- * the name, version, device, ip, etc regarding the current client
- */
-export type ClientManifest = {
-  /** Meta Information */
-  id: string;
-  name: string;
-  short_name: string;
-  description: string;
-  reactive: boolean;
-  connectionId?: string;
-  repository: string;
-  author: string;
-  version: string;
-  /**
-   * With what versions the client is compatible with
-   * @example
-   * {
-   *  server: '>=0.10.0',
-   *  app: '>=0.10.0',
-   * }
-   */
-  compatibility: {
-    server: string;
-    app: string;
-  };
-  context: ClientDeviceType;
-
-  /** @depreciated  */
-  version_code?: number;
-  /** @depreciated  */
-  compatible_server?: number[];
-};
-
 export enum ProviderCapabilities {
   CONFIGURE = 0,
   PING = 1,
   COMMUNICATE = 2,
 }
 
-/** For use in transit. A tag to be added to a device that will track where it's connected to */
-export type ClientIdentifier = {
-  id: string;
-  /** What the provider is capable of doing */
-  capabilities?: ProviderCapabilities[];
-  method?: ClientConnectionMethod;
-  providerId: string;
-  active?: boolean;
-};
-
 /**
  * The client object that keeps track of connected clients
  * For transit - should never be stored anywhere or sent anywhere but the client that owns it
+ * @since 0.11.1
  */
 export type Client = {
   /** The primary way of identifying the client */
@@ -134,6 +65,12 @@ export type Client = {
   uptime?: number;
   manifest?: ClientManifest;
 
+  /** Meta information is not for internal use and should only be for user-displyed info and stats */
+  meta: {
+    [PlatformIDs.ADB]?: ADBMetaInfo;
+    [PlatformIDs.WEBSOCKET]?: WebsocketMetaInfo
+  }
+
   /** @deprecated - use currentMapping.profileId directly */
   default_view?: string;
   /** @deprecated */
@@ -149,21 +86,100 @@ export type Client = {
   /** @deprecated - use currentMapping.profileId directly */
   currentMappingID?: string;
 } & (
-  | {
+    | {
+      connected: false;
       // The provider with the most capabilities
       primaryProviderId?: string;
       timestamp?: number;
-      connected: false;
     }
-  | {
+    | {
+      connected: true;
       // The provider with the most capabilities
       primaryProviderId: string;
-      connected: true;
       timestamp: number;
     }
-);
+  );
 
-type BaseClientType = {
+export type ADBMetaInfo = {
+  adbId: string;
+  offline?: boolean;
+  device_version?: string;
+  usid?: string;
+  mac_bt?: string;
+  brightness?: number
+  services?: {
+    [key: string]: boolean;
+  }
+}
+
+export type WebsocketMetaInfo = {
+  wsId: string;
+}
+
+export type ClientReference = {
+  id: string;
+  version?: string;
+};
+
+/**
+ * @module deskthing/client
+ * @description The Client Manifest file interface which holds details such as
+ * the name, version, device, ip, etc regarding the current client
+ * @since 0.11.1
+ */
+export type ClientManifest = {
+  /** Meta Information */
+  id: string;
+  name: string;
+  short_name: string;
+  version: string;
+
+  /** Decorative Info */
+  description: string;
+  reactive: boolean;
+  repository: string;
+  author: string;
+
+  /** Dynamic Info */
+  connectionId?: string;
+
+  /**
+   * With what versions the client is compatible with
+   * @example
+   * {
+   *  server: '>=0.10.0',
+   *  app: '>=0.10.0',
+   * }
+   */
+  compatibility: {
+    server: string;
+    app: string;
+  };
+
+  /** Information regarding the current connection session */
+  context: ClientDeviceType;
+
+  /** @depreciated  */
+  version_code?: number;
+  /** @depreciated  */
+  compatible_server?: number[];
+};
+
+/**
+ * For use in transit. A tag to be added to a device that will track where it's connected to
+ * @since 0.11.1
+ */
+export type ClientIdentifier = {
+  id: string;
+  /** What the provider is capable of doing */
+  capabilities?: ProviderCapabilities[];
+  method?: ClientConnectionMethod;
+  providerId: string;
+  active?: boolean;
+};
+
+// Ensure that ADB connections have the adbId in there too
+export type ClientDeviceType = {
   /**The id of the platform (for images) */
   id: ClientPlatformIDs;
   /**The name of the platform */
@@ -172,30 +188,8 @@ type BaseClientType = {
   ip: string;
   /**The port the client is connected to */
   port: number;
-};
-
-export type ADBClientType = BaseClientType & {
-  /**The method the device is connected via */
-  method: ClientConnectionMethod.ADB;
-  /** The ID of the device as seen by ADB */
-  adbId: string;
-
-  offline?: boolean;
-
-  app_version?: string;
-  usid?: string;
-  mac_bt?: string;
-  services?: {
-    [key: string]: boolean;
-  };
-};
-
-export type DefaultClientType = BaseClientType & {
-  method: Exclude<ClientConnectionMethod, ClientConnectionMethod.ADB>;
-};
-
-// Ensure that ADB connections have the adbId in there too
-export type ClientDeviceType = ADBClientType | DefaultClientType;
+  method: ClientConnectionMethod
+}
 
 /**
  * @module deskthing/client
@@ -218,6 +212,31 @@ export type ClientConfigurations = {
   saveLocation: boolean;
   use24hour: boolean;
 };
+
+/**
+ * @module deskthing/client
+ * @description
+ * View mode enum used for configuring display states
+ * @see {@link ClientPreferences.appTrayState}
+ * @see {@link MiniplayerSettings.state}
+ */
+export enum ViewMode {
+  HIDDEN = "hidden",
+  PEEK = "peek",
+  FULL = "full",
+}
+
+/**
+ * @module deskthing/client
+ * @description
+ * Volume mode enum used for configuring volume control behavior
+ * @see {@link ClientPreferences.volume}
+ */
+export enum VolMode {
+  WHEEL = "wheel",
+  SLIDER = "slider",
+  BAR = "bar",
+}
 
 /**
  * @module deskthing/client
