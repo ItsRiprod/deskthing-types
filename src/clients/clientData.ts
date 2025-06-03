@@ -61,7 +61,7 @@ export type Client = {
 
   // connection info
   /** A unique ID for the client. Only needed if connected */
-  identifiers: Record<string, ClientIdentifier>;
+  identifiers: { [key in PlatformIDs]?: ClientIdentifier }
   uptime?: number;
   manifest?: ClientManifest;
 

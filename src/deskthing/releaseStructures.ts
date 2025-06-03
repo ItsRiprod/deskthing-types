@@ -1,29 +1,34 @@
-import { PlatformTypes, TagTypes } from "../apps/appData.js"
+import { AppManifest, PlatformTypes, TagTypes } from "../apps/appData.js"
+import { ClientManifest } from "../clients/clientData.js";
 
 export type AppReleaseTypes = "single" | "multi" | "external";
 
+/**
+ * @depreciated
+ */
 export type AppReleaseMeta = {
   id: string;
-  version: string; // version of the releases
+  version: string; // version of the release
   type: AppReleaseTypes;
 } & (
-  | ({
+    | ({
       type: "single";
     } & AppReleaseSingleMeta)
-  | {
+    | {
       type: "multi";
       repository: string;
       releases: AppReleaseSingleMeta[];
     }
-  | {
+    | {
       // Will be ignored if not from the main repository
       type: "external";
       releases: AppReleaseCommunity[];
     }
-);
+  );
 
 /**
  * This will only exist in the main repository and will be ignored otherwise
+ * @deprecated
  */
 export type AppReleaseCommunity = {
   version: string;
@@ -40,6 +45,9 @@ export type AppReleaseCommunity = {
   icon?: string;
 };
 
+/**
+ * @deprecated
+ */
 export type AppReleaseSingleMeta = {
   id: string;
   label: string;
@@ -65,6 +73,10 @@ export type AppReleaseSingleMeta = {
   updatedAt?: number;
   createdAt?: number;
 };
+
+/**
+ * @depreciated
+ */
 export type ClientReleaseMeta = {
   id: string;
   version: string;
@@ -91,3 +103,68 @@ export type ClientReleaseMeta = {
   updatedAt?: number;
   createdAt?: number;
 };
+
+type GitRepoUrl =
+  | `https://github.com/${string}/${string}`
+  | `git@github.com:${string}/${string}.git`
+  | `https://gitlab.com/${string}/${string}`;
+
+/** Helper type for the latest release structure enforcement for migration typechecking */
+export type MultiReleaseJSONLatest = MultiReleaseJSON118
+
+/** Helper type for the latest release structure enforcement for migration typechecking */
+export type ClientLatestJSONLatest = ClientLatestJSON118
+
+/** Helper type for the latest release structure enforcement for migration typechecking */
+export type AppLatestJSONLatest = AppLatestJSON118
+
+
+export type MultiReleaseJSON = MultiReleaseJSON118
+
+export type ClientLatestJSON = ClientLatestJSON118
+
+export type AppLatestJSON = AppLatestJSON118
+
+export type ReleaseMETAJson = {
+  /** enforces that it must be a github repo url */
+  repository: GitRepoUrl
+  updateUrl: string
+  downloads: number
+  size: number
+  updatedAt: number
+  createdAt: number
+
+  // These are used from within DeskThing to keep track of the releases
+  isInstalled?: boolean
+}
+
+/** Compatibility-driven types based on versioning descrimination */
+
+type MultiReleaseJSON118 = {
+  meta_version: '0.11.8'
+  /** enforces that it must be a github repo url */
+  repository: GitRepoUrl
+  /** An array of .json files that can be pulled to get app-specific inforamtion (either ClientLatestJSON or AppLatestJSON) */
+  fileIds?: string[]
+  repositories?: GitRepoUrl[] // an optional array of repository URLs that point to "community apps" that can optionally be added
+}
+
+type ClientLatestJSON118 = ReleaseMETAJson & {
+  meta_version: '0.11.8'
+  clientManifest: ClientManifest
+  /** Expected: base64 encoded image of the icon */
+  icon?: string
+  /** Security fields */
+  hash?: string;
+  hashAlgorithm?: string;
+}
+
+type AppLatestJSON118 = ReleaseMETAJson & {
+  meta_version: '0.11.8'
+  /** Expected: base64 encoded image of the icon */
+  icon?: string
+  appManifest: AppManifest
+  /** Security fields */
+  hash?: string;
+  hashAlgorithm?: string;
+}
