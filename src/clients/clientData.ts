@@ -159,9 +159,14 @@ export type ClientManifest = {
   /** Information regarding the current connection session */
   context: ClientDeviceType;
 
-  /** @depreciated  */
+  meta?: {
+    updateAvailable: boolean
+    updateVersion: string
+  }
+
+  /** @deprecated  */
   version_code?: number;
-  /** @depreciated  */
+  /** @deprecated  */
   compatible_server?: number[];
 };
 

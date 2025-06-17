@@ -6,7 +6,7 @@ import { MusicEventPayloads, SongData } from "../meta/music.js"
 import { TimePayload } from "../meta/time.js"
 import { GenericTransitData } from "../meta/transit.js"
 import { ClientConfigurations, ClientManifest } from "./clientData.js"
-import { ClientPreferences } from "./clientDepreciated.js"
+import { ClientPreferences } from "./clientDeprecated.js"
 
 /**
  * You generally do not have to worry about this
@@ -109,6 +109,8 @@ export enum DEVICE_DESKTHING {
   ACTION = "action",
   /** General set payload */
   SET = "set",
+  /** General get payload */
+  GET = "get",
   /** Request to ping the server */
   PING = "ping",
   /** Response from a ping */
@@ -129,7 +131,7 @@ export enum DEVICE_DESKTHING {
 
 /**
  * Intended for being sent from the DeskThing Server to the Client
- * @depreciated - why are you using this and nto Client2DeskThingData?
+ * @deprecated - why are you using this and nto Client2DeskThingData?
  */
 export type DeviceToClientData = DeviceToClientCore
 
@@ -146,6 +148,10 @@ export type DeviceToDeskthingData = { deviceId?: string } & (
           type: DEVICE_DESKTHING.SET;
           request: "update_pref_index";
           payload: { app: string; index: number };
+        }
+      | {
+          type: DEVICE_DESKTHING.GET;
+          request: "initialData";
         }
       | {
           type: DEVICE_DESKTHING.ACTION;

@@ -4,7 +4,7 @@ import { ClientManifest } from "../clients/clientData.js";
 export type AppReleaseTypes = "single" | "multi" | "external";
 
 /**
- * @depreciated
+ * @deprecated
  */
 export type AppReleaseMeta = {
   id: string;
@@ -75,7 +75,7 @@ export type AppReleaseSingleMeta = {
 };
 
 /**
- * @depreciated
+ * @deprecated
  */
 export type ClientReleaseMeta = {
   id: string;
@@ -104,10 +104,10 @@ export type ClientReleaseMeta = {
   createdAt?: number;
 };
 
-type GitRepoUrl =
-  | `https://github.com/${string}/${string}`
-  | `git@github.com:${string}/${string}.git`
-  | `https://gitlab.com/${string}/${string}`;
+export type GitDownloadUrl = `https://github.com/${string}/${string}/releases/download/${string}/${string}` | `https://gitlab.com/${string}/${string}/-/releases/${string}/${string}`;
+
+export type GitRepoUrl = `https://github.com/${string}/${string}` | `https://api.github.com/repos/${string}/${string}` | `git@github.com:${string}/${string}.git` | `https://gitlab.com/${string}/${string}`;
+
 
 /** Helper type for the latest release structure enforcement for migration typechecking */
 export type MultiReleaseJSONLatest = MultiReleaseJSON118
@@ -142,6 +142,7 @@ export type ReleaseMETAJson = {
 
 type MultiReleaseJSON118 = {
   meta_version: '0.11.8'
+  meta_type: 'multi'
   /** enforces that it must be a github repo url */
   repository: GitRepoUrl
   /** An array of .json files that can be pulled to get app-specific inforamtion (either ClientLatestJSON or AppLatestJSON) */
@@ -151,6 +152,7 @@ type MultiReleaseJSON118 = {
 
 type ClientLatestJSON118 = ReleaseMETAJson & {
   meta_version: '0.11.8'
+  meta_type: 'client'
   clientManifest: ClientManifest
   /** Expected: base64 encoded image of the icon */
   icon?: string
@@ -161,6 +163,7 @@ type ClientLatestJSON118 = ReleaseMETAJson & {
 
 type AppLatestJSON118 = ReleaseMETAJson & {
   meta_version: '0.11.8'
+  meta_type: 'app'
   /** Expected: base64 encoded image of the icon */
   icon?: string
   appManifest: AppManifest

@@ -24,7 +24,7 @@ export type SongData11 = {
   playlist: string | null;
   playlist_id: string | null;
   shuffle_state: boolean | null;
-  /** @depreciated use 'track' | 'all' | 'off' instead */
+  /** @deprecated use 'track' | 'all' | 'off' instead */
   repeat_state: "off" | "all" | "track";
   is_playing: boolean;
   /** The app source of the data payload */
@@ -41,15 +41,15 @@ export type SongData11 = {
   liked?: boolean;
   color?: ThemeColor;
 
-  /** @depreciated use the tag system instead */
+  /** @deprecated use the tag system instead */
   can_like?: boolean;
-  /** @depreciated use the tag system instead */
+  /** @deprecated use the tag system instead */
   can_change_volume?: boolean;
-  /** @depreciated use the tag system instead */
+  /** @deprecated use the tag system instead */
   can_set_output?: boolean;
-  /** @depreciated use the tag system instead */
+  /** @deprecated use the tag system instead */
   can_fast_forward?: boolean;
-  /** @depreciated use the tag system instead */
+  /** @deprecated use the tag system instead */
   can_skip?: boolean;
 };
 
@@ -103,7 +103,7 @@ export enum AUDIO_REQUESTS {
   FAST_FORWARD = "fast_forward",
   PLAY = "play",
   PAUSE = "pause",
-  /** @depreciated */
+  /** @deprecated */
   STOP = "stop",
   SEEK = "seek",
   LIKE = "like",

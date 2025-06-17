@@ -8,7 +8,7 @@ import { APP_REQUESTS, AppProcessWrapper, AppToDeskThingData, DeskThingProcessDa
 export type Manifest = AppManifest;
 
 // Sub-types for the 'get' event
-/**@depreciated - don't use this as it will be removed in the future */
+/**@deprecated - don't use this as it will be removed in the future */
 export type GetTypes = "data" | "config" | "input" | "settings";
 
 /**
@@ -22,7 +22,7 @@ export type AuthScopes = {
   };
 };
 
-/** @depreciated */
+/** @deprecated */
 export type Response = {
   data: any;
   status: number;
@@ -30,14 +30,14 @@ export type Response = {
   request: string[];
 };
 
-/** @depreciated @since 0.11.0 */
+/** @deprecated @since 0.11.0 */
 export type SysEvents = (
   event: string,
   listener: (...args: any[]) => void
 ) => void;
 
 /**
- * @depreciated - use {@link DeskThingType} instead
+ * @deprecated - use {@link DeskThingType} instead
  * @since 0.11.0
  */
 export type startData = {
@@ -48,7 +48,7 @@ export type startData = {
 
 
 /**
- * @depreciated - use {@link ServerEvent} instead and use it as an Enum
+ * @deprecated - use {@link ServerEvent} instead and use it as an Enum
  */
 export type IncomingEvent = DESKTHING_EVENTS;
 

@@ -6,7 +6,7 @@ import { EventMode, ActionReference, MappingProfile } from "./mappings.js"
 /**
  * This only exists on the server / client. Apps do not interact with this
  * @package DeskThingServer + DeskThingClient
- * @depreciated use {@link DeskThingProfile} or {@link MappingProfile} instead
+ * @deprecated use {@link DeskThingProfile} or {@link MappingProfile} instead
  */
 export interface ButtonMapping extends Profile {
   mapping: {
@@ -19,14 +19,14 @@ export interface ButtonMapping extends Profile {
 /**
  * This only exists on the server / client. Apps do not interact with this
  * @package DeskThingServer + DeskThingClient
- * @depreciated use {@link MappingProfile} instead
+ * @deprecated use {@link MappingProfile} instead
  */
 export type CombinedButtonMapping = MappingProfile
 
 /**
  * This only exists on the server / client. Apps do not interact with this
  * @package DeskThingServer + DeskThingClient
- * @depreciated use {@link DeskThingProfile} instead
+ * @deprecated use {@link DeskThingProfile} instead
  */
 export type Profile = {
   version: string;
@@ -38,7 +38,7 @@ export type Profile = {
   extends?: string;
 };
 
-/** @depreciated - use a more specific type */
+/** @deprecated - use a more specific type */
 export type SocketData = {
   app?: string;
   type: string;

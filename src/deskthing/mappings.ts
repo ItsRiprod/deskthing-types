@@ -65,7 +65,7 @@ export type Action = {
    */
   version: string;
   /**
-   * (depreciated) The version of the server the action is compatible with
+   * (deprecated) The version of the server the action is compatible with
    */
   version_code?: number;
   /**
@@ -109,7 +109,7 @@ export type Key = {
   description?: string; // User Readable description
   version: string; //  The version of the key
   enabled: boolean; // Whether or not the app associated with the key is enabled
-  version_code?: number; // (depreciated) The version of the server the action is compatible with
+  version_code?: number; // (deprecated) The version of the server the action is compatible with
   modes: EventMode[]; // The Modes of the key
 };
 

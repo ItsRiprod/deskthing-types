@@ -12,15 +12,16 @@ export enum SETTING_TYPES {
   LIST = "list",
   RANKED = "ranked",
   COLOR = "color",
+  FILE = "file",
 }
 
 export type CommonSetting = {
-    disabled?: boolean;
-    id?: string
-    label: string;
-    value: unknown
-    source?: string
-    description?: string;
+  disabled?: boolean;
+  id?: string
+  label: string;
+  value: unknown
+  source?: string
+  description?: string;
 }
 
 /**
@@ -28,8 +29,8 @@ export type CommonSetting = {
  * @since 0.11.0
  */
 export type SettingReference = {
-    id: string;
-    source: string
+  id: string;
+  source: string
 }
 
 export type SettingsNumber = CommonSetting & {
@@ -64,6 +65,19 @@ export type SettingsSelect = CommonSetting & {
   placeholder?: string;
   options: SettingOption[];
 };
+
+export type FileType = {
+  name: string;
+  extensions: string[];
+};
+
+export type SettingsFile = CommonSetting & {
+  type: SETTING_TYPES.FILE;
+  value: string;
+  placeholder?: string;
+  fileTypes?: FileType[];
+};
+
 
 export type SettingOption = {
   label: string;
@@ -107,12 +121,14 @@ export type SettingsType =
   | ({ type: SETTING_TYPES.RANGE } & SettingsRange)
   | ({ type: SETTING_TYPES.RANKED } & SettingsRanked)
   | ({ type: SETTING_TYPES.LIST } & SettingsList)
-  | ({ type: SETTING_TYPES.COLOR } & SettingsColor);
+  | ({ type: SETTING_TYPES.COLOR } & SettingsColor)
+  | ({ type: SETTING_TYPES.FILE } & SettingsFile);
+    
 
 export type AppSettingKey = string
 
 export type AppSettings = {
-    [K in AppSettingKey]: SettingsType & { id: K }
+  [K in AppSettingKey]: SettingsType & { id: K }
 }
 export type InputResponse = {
   [key: string]: string | boolean;

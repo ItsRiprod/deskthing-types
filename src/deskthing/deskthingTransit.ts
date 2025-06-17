@@ -96,7 +96,7 @@ export type ClientMetaData = {
  */
 export enum DESKTHING_EVENTS {
   /**
-   * @depreciated - No longer used
+   * @deprecated - No longer used
    * Raw message event from the server
    */
   MESSAGE = "message",

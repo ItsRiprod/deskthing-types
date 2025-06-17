@@ -12,7 +12,7 @@ export interface DeskThingProfile {
     requiredClient?: ClientReference[]
   
     // Server Metadata
-    /** @depreciated Not implemented yet */
+    /** @deprecated Not implemented yet */
     trigger_url?: string
     created: Date
     enabled?: boolean

@@ -1,4 +1,4 @@
-export * from './depreciated.js'
+export * from './deprecated.js'
 export * from './deskthingTransit.js'
 export * from './mappings.js'
 export * from './profiles.js'

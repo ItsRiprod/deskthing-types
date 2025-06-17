@@ -1,6 +1,6 @@
 import { DeskThingToAppData } from "../deskthing/deskthingTransit.js"
 import { Key, Action } from "../deskthing/mappings.js"
-import { startData } from "./appDepreciated.js"
+import { startData } from "./appDeprecated.js"
 import { SavedData } from "./appInstance.js"
 import { AppSettings } from "./appSettings.js"
 import { Task } from "./appTasks.js"
@@ -63,19 +63,19 @@ export type AppManifest = {
   /** Defaults to just using postinstall.js - can be used to specify with or without file extension (default to js)*/
   postinstall_script?: string;
 
-  /**@depreciated */
+  /**@deprecated */
   version_code?: number;
-  /**@depreciated */
+  /**@deprecated */
   compatible_server?: number[];
-  /**@depreciated */
+  /**@deprecated */
   compatible_client?: number[];
-  /**@depreciated */
+  /**@deprecated */
   isAudioSource?: boolean;
-  /**@depreciated */
+  /**@deprecated */
   isScreenSaver?: boolean;
-  /**@depreciated */
+  /**@deprecated */
   isLocalApp?: boolean;
-  /**@depreciated */
+  /**@deprecated */
   isWebApp?: boolean;
 };
 

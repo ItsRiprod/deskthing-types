@@ -1,5 +1,5 @@
 export * from './appData.js'
-export * from './appDepreciated.js'
+export * from './appDeprecated.js'
 export * from './appInstance.js'
 export * from './appSettings.js'
 export * from './appTasks.js'

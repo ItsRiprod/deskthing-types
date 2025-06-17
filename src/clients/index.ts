@@ -1,3 +1,3 @@
 export * from './clientData.js'
-export * from './clientDepreciated.js'
+export * from './clientDeprecated.js'
 export * from './clientTransit.js'
