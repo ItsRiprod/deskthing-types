@@ -180,6 +180,8 @@ export type ClientIdentifier = {
   capabilities?: ProviderCapabilities[];
   method?: ClientConnectionMethod;
   providerId: string;
+  /** Whether or not the provider is connected */
+  connectionState: ConnectionState
   active?: boolean;
 };
 

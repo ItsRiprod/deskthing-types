@@ -16,7 +16,26 @@ export enum SETTING_TYPES {
 }
 
 export type CommonSetting = {
+  /**
+   * Whether or not the setting is disabled
+   * If true, the setting will not be editable by the user
+   */
   disabled?: boolean;
+  /** Versioning of the task, will be used to determine if the task is up to date
+   * If no version is specified, the task will use the apps version
+   * If the version specified is different from the version saved, it will be overwritten on initialization
+   * Otherwise, the setting will persist from older versions
+   * @since 0.11.13
+   */
+  version?: string;
+  /**
+   * An array of setting IDs that this setting depends on being enabled to be interactable
+   * If any of the settings in this array are disabled, this setting will also be disabled
+   * Additionally, if the setting is type BOOLEAN and the value is false, this setting will also be disabled
+   * If the setting is type STRING or type MULTISELECT and the value is an empty string or array, this setting will also be disabled
+   * @since 0.11.14
+   */
+  dependsOn?: string[]
   id?: string
   label: string;
   value: unknown
@@ -36,8 +55,9 @@ export type SettingReference = {
 export type SettingsNumber = CommonSetting & {
   type: SETTING_TYPES.NUMBER;
   value: number;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
+  step?: number
 };
 
 export type SettingsBoolean = CommonSetting & {

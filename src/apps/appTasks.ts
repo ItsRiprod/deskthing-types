@@ -10,7 +10,7 @@ export type Task = {
   available?: boolean;
   completed: boolean;
   label: string;
-  started: boolean;
+  started?: boolean;
   currentStep?: string;
   description?: string;
   steps: { [key: string]: Step };
@@ -21,6 +21,9 @@ export type TaskReference = {
   source: string;
 };
 
+/**
+ * The universal type for steps that all tasks hold. Steps are the building blocks of tasks and define the actions, conditions, and requirements for completing a task.
+ */
 export type Step = (
   | TaskStep
   | TaskAction
@@ -32,11 +35,30 @@ export type Step = (
   parentId?: string;
   id: string;
   debug?: boolean;
+  /**
+   * The ID of the image to use for this step
+   * The ID should match the file name of the image in the deskthing/images/tasks directory
+   * without the file extension (e.g. "task-step-1" for "task-step-1.png")
+   * If this is not provided, the step will not have an image
+   */
+  imageId?: string
+  /**
+   * Whether or not the user is forced to complete this step
+   * For settings, this means the user must modify the setting before continuing
+   */
   strict?: boolean;
   source?: string;
   label?: string;
+  /**
+   * The instructions for the user to complete this step
+   * This should be a short description of what the user needs to do
+   */
   instructions?: string;
   completed?: boolean;
+  /**
+   * These are a dropdown of potential debugging steps that the user can take
+   * to help diagnose issues with the task.
+   */
   debugging?: {
     [key: string]: DebugStep;
   };
