@@ -204,124 +204,130 @@ export type AppToDeskThingData = {
   version?: string;
   source?: string
 } & // GET requests
-(| { type: APP_REQUESTS.GET; request: "data"; payload?: never }
-  | { type: APP_REQUESTS.GET; request: "appData"; payload?: never }
-  | { type: APP_REQUESTS.GET; request: "config"; payload?: never }
-  | { type: APP_REQUESTS.GET; request: "settings"; payload?: never }
-  | { type: APP_REQUESTS.GET; request: "input"; payload: AuthScopes }
-  | { type: APP_REQUESTS.GET; request: "connections"; payload?: never }
+  (| { type: APP_REQUESTS.GET; request: "data"; payload?: never }
+    | { type: APP_REQUESTS.GET; request: "appData"; payload?: never }
+    | { type: APP_REQUESTS.GET; request: "config"; payload?: never }
+    | { type: APP_REQUESTS.GET; request: "settings"; payload?: never }
+    | { type: APP_REQUESTS.GET; request: "input"; payload: AuthScopes }
+    | { type: APP_REQUESTS.GET; request: "connections"; payload?: never }
 
-  // SET requests
-  | { type: APP_REQUESTS.SET; request: "settings"; payload: AppSettings }
-  | { type: APP_REQUESTS.SET; request: "data"; payload: SavedData }
-  | { type: APP_REQUESTS.SET; request: "appData"; payload: AppDataInterface }
+    // SET requests
+    | { type: APP_REQUESTS.SET; request: "settings"; payload: AppSettings }
+    | { type: APP_REQUESTS.SET; request: "settings-init"; payload: AppSettings }
+    | { type: APP_REQUESTS.SET; request: "data"; payload: SavedData }
+    | { type: APP_REQUESTS.SET; request: "appData"; payload: AppDataInterface }
 
-  // DELETE requests
-  | { type: APP_REQUESTS.DELETE; request: "settings"; payload: string | string[] }
-  | { type: APP_REQUESTS.DELETE; request: "data"; payload: string | string[] }
+    // DELETE requests
+    | { type: APP_REQUESTS.DELETE; request: "settings"; payload: string | string[] }
+    | { type: APP_REQUESTS.DELETE; request: "data"; payload: string | string[] }
 
-  // OPEN requests
-  | { type: APP_REQUESTS.OPEN; request?: string; payload: string }
+    // OPEN requests
+    | { type: APP_REQUESTS.OPEN; request?: string; payload: string }
 
-  // SEND requests (to client)
-  | { type: APP_REQUESTS.SEND; request?: string; payload: GenericTransitData }
+    // SEND requests (to client)
+    | { type: APP_REQUESTS.SEND; request?: string; payload: GenericTransitData }
 
-  // TOAPP requests
-  | { type: APP_REQUESTS.TOAPP; request: string; payload: any }
+    // TOAPP requests
+    | { type: APP_REQUESTS.TOAPP; request: string; payload: any }
 
-  // LOG requests
-  | { type: APP_REQUESTS.LOG; request: LOGGING_LEVELS; payload: string | object }
+    // LOG requests
+    | { type: APP_REQUESTS.LOG; request: LOGGING_LEVELS; payload: string | object }
 
-  // KEY requests
-  | { type: APP_REQUESTS.KEY; request: "add"; payload: Partial<Key> }
-  | { type: APP_REQUESTS.KEY; request: "remove"; payload: { id: string } }
-  | {
+    // KEY requests
+    | { type: APP_REQUESTS.KEY; request: "add"; payload: Partial<Key> }
+    | { type: APP_REQUESTS.KEY; request: "remove"; payload: { id: string } }
+    | {
       type: APP_REQUESTS.KEY;
       request: "trigger";
       payload: { id: string; mode: EventMode };
     }
 
-  // ACTION requests
-  | { type: APP_REQUESTS.ACTION; request: "add"; payload: Partial<Action> }
-  | { type: APP_REQUESTS.ACTION; request: "remove"; payload: { id: string } }
-  | {
+    // ACTION requests
+    | { type: APP_REQUESTS.ACTION; request: "add"; payload: Partial<Action> }
+    | { type: APP_REQUESTS.ACTION; request: "remove"; payload: { id: string } }
+    | {
       type: APP_REQUESTS.ACTION;
       request: "update";
       payload: { id: string; icon: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.ACTION;
       request: "run";
       payload: { id: string; source?: string };
     }
+    | {
+      type: APP_REQUESTS.ACTION;
+      request: "init";
+      payload: Action[];
+    }
 
-  // TASK requests
-  | {
+    // TASK requests
+    | {
       type: APP_REQUESTS.TASK;
       request: "init";
       payload: { tasks: Record<string, Task> };
     }
-  | { type: APP_REQUESTS.TASK; request: "get"; payload?: { source?: string } }
-  | {
+    | { type: APP_REQUESTS.TASK; request: "get"; payload?: { source?: string } }
+    | {
       type: APP_REQUESTS.TASK;
       request: "update";
       payload: { taskId: string; task: Partial<Task> };
     }
-  | { type: APP_REQUESTS.TASK; request: "delete"; payload: { taskId: string } }
-  | { type: APP_REQUESTS.TASK; request: "add"; payload: { task: Task } }
-  | {
+    | { type: APP_REQUESTS.TASK; request: "delete"; payload: { taskId: string } }
+    | { type: APP_REQUESTS.TASK; request: "add"; payload: { task: Task } }
+    | {
       type: APP_REQUESTS.TASK;
       request: "complete";
       payload: { source?: string; taskId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.TASK;
       request: "restart";
       payload: { source?: string; taskId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.TASK;
       request: "start";
       payload: { source?: string; taskId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.TASK;
       request: "end";
       payload: { source?: string; taskId: string };
     }
 
-  // STEP requests
-  | {
+    // STEP requests
+    | {
       type: APP_REQUESTS.STEP;
       request: "get";
       payload: { source?: string; taskId: string; stepId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.STEP;
       request: "update";
       payload: { taskId: string; stepId: string; step: Partial<Step> };
     }
-  | {
+    | {
       type: APP_REQUESTS.STEP;
       request: "delete";
       payload: { taskId: string; stepId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.STEP;
       request: "add";
       payload: { taskId: string; step: Step };
     }
-  | {
+    | {
       type: APP_REQUESTS.STEP;
       request: "complete";
       payload: { taskId: string; stepId: string };
     }
-  | {
+    | {
       type: APP_REQUESTS.STEP;
       request: "restart";
       payload: { taskId: string; stepId: string };
     }
 
-  // Music Data
-  | { type: APP_REQUESTS.SONG; request?: string; payload: SongData; app?: "client" }
-);
+    // Music Data
+    | { type: APP_REQUESTS.SONG; request?: string; payload: SongData; app?: "client" }
+  );
