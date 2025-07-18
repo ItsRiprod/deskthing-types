@@ -67,6 +67,7 @@ export type Client = {
 
   /** Meta information is not for internal use and should only be for user-displyed info and stats */
   meta: {
+    [PlatformIDs.MAIN]?: MAINMetaInfo;
     [PlatformIDs.ADB]?: ADBMetaInfo;
     [PlatformIDs.WEBSOCKET]?: WebsocketMetaInfo
   }
@@ -113,7 +114,15 @@ export type ADBMetaInfo = {
 }
 
 export type WebsocketMetaInfo = {
-  wsId: string;
+  wsId?: string;
+  ping?: {
+    server?: number;
+    socket?: number;
+  };
+}
+
+export type MAINMetaInfo = {
+  default?: string // nothing
 }
 
 export type ClientReference = {
