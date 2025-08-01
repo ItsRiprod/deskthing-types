@@ -133,6 +133,9 @@ export type ReleaseMETAJson = {
   size: number
   updatedAt: number
   createdAt: number
+  
+  /** @since 0.11.15 */
+  repositories?: GitRepoUrl[]
 
   // These are used from within DeskThing to keep track of the releases
   isInstalled?: boolean
