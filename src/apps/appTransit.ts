@@ -2,6 +2,7 @@ import { DeskThingToAppData } from "../deskthing/deskthingTransit.js"
 import { Key, EventMode, Action } from "../deskthing/mappings.js"
 import { Log, LOGGING_LEVELS } from "../meta/logging.js"
 import { SongData } from "../meta/music.js"
+import { NotificationMessage } from "../meta/notifications.js"
 import { GenericTransitData, TransitData } from "../meta/transit.js"
 import { AppDataInterface } from "./appData.js"
 import { AuthScopes } from "./appDeprecated.js"
@@ -30,7 +31,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.getData}, {@link DeskThing.getConfig}, {@link DeskThing.getSettings}, or {@link DeskThing.getUserInput} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.GET, { request: 'settings' })
+   * DeskThing.sendData(APP_REQUESTS.GET, { request: 'settings' })
    */
   GET = "get",
 
@@ -41,7 +42,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.saveData} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.SET, { payload: { key: 'value' }})
+   * DeskThing.sendData(APP_REQUESTS.SET, { payload: { key: 'value' }})
    */
   SET = "set",
 
@@ -51,8 +52,8 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.deleteSettings} or {@link DeskThing.deleteData} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.DELETE, { payload: ['key1', 'key2'] }, "settings")
-   * DeskThing.sendData(AppTypes.DELETE, { payload: ['key1', 'key2'] }, "data")
+   * DeskThing.sendData(APP_REQUESTS.DELETE, { payload: ['key1', 'key2'] }, "settings")
+   * DeskThing.sendData(APP_REQUESTS.DELETE, { payload: ['key1', 'key2'] }, "data")
    */
   DELETE = "delete",
 
@@ -64,7 +65,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.openUrl} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.OPEN, { payload: 'https://someurl.com' })
+   * DeskThing.sendData(APP_REQUESTS.OPEN, { payload: 'https://someurl.com' })
    */
   OPEN = "open",
 
@@ -76,7 +77,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.send} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.SEND, { type: 'someData', payload: 'value' })
+   * DeskThing.sendData(APP_REQUESTS.SEND, { type: 'someData', payload: 'value' })
    *
    * @example
    * DeskThing.send({ type: 'someData', payload: 'value', clientId: '18274923402' })
@@ -91,7 +92,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.sendDataToOtherApp} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.TOAPP, { request: 'spotify', payload: { type: 'get', data: 'music' }})
+   * DeskThing.sendData(APP_REQUESTS.TOAPP, { request: 'spotify', payload: { type: 'get', data: 'music' }})
    */
   TOAPP = "toApp",
 
@@ -103,7 +104,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.log} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.LOG, { request: 'ERROR', payload: 'Something went wrong' })
+   * DeskThing.sendData(APP_REQUESTS.LOG, { request: 'ERROR', payload: 'Something went wrong' })
    */
   LOG = "log",
 
@@ -115,7 +116,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * @remarks Use {@link DeskThing.registerKeyObject} instead
    *
    * @example
-   * DeskThing.sendData(AppTypes.KEY, { request: 'add', payload: { id: 'myKey', modes: ['default'] }})
+   * DeskThing.sendData(APP_REQUESTS.KEY, { request: 'add', payload: { id: 'myKey', modes: ['default'] }})
    */
   KEY = "key",
 
@@ -128,7 +129,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * It is recommended to use {@link DeskThing.registerAction} instead of sending data directly.
    *
    * @example
-   * DeskThing.sendData(AppTypes.ACTION, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
+   * DeskThing.sendData(APP_REQUESTS.ACTION, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
    */
   ACTION = "action",
 
@@ -140,7 +141,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * It is recommended to use {@link DeskThing.tasks.addTask} instead of sending data directly.
    *
    * @example
-   * DeskThing.sendData(AppTypes.TASK, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
+   * DeskThing.sendData(APP_REQUESTS.TASK, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
    */
   TASK = "task",
 
@@ -152,7 +153,7 @@ export enum APP_REQUESTS { // v0.10.4.2
    * It is recommended to use {@link DeskThing.tasks.addStep} instead of sending data directly.
    *
    * @example
-   * DeskThing.sendData(AppTypes.ACTION, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
+   * DeskThing.sendData(APP_REQUESTS.ACTION, { request: 'add', payload: { id: 'myAction', name: 'My Action' }})
    */
   STEP = "step",
 
@@ -161,9 +162,31 @@ export enum APP_REQUESTS { // v0.10.4.2
    * Payload should be type {@link SongData}
    *
    * @example
-   * DeskThing.send({ type: AppTypes.SONG, request: 'add', payload: { id: 'mySong', title: 'My Song', artist: 'Artist Name' }})
+   * DeskThing.send({ type: APP_REQUESTS.SONG, request: 'add', payload: { id: 'mySong', title: 'My Song', artist: 'Artist Name' }})
    */
   SONG = "song",
+
+  /**
+   * Sends a notification to the server
+   * Payload should be type {@link NotificationMessage}
+   *
+   * @example
+   * const result = await DeskThing.once({
+   *        type: APP_REQUESTS.MESSAGE,
+   *        request: 'send',
+   *        payload: {
+   *            id: 'myMessage',
+   *            type: "text",
+   *            title: 'My Message',
+   *            description: 'This is a message',
+   *            link: 'https://example.com'
+   *        }
+   *    }, { type: APP_REQUESTS.MESSAGE, request: 'myMessage' }
+   * )
+   * 
+   * console.log(result.payload.response) // will log the response from the user
+   */
+  MESSAGE = "message",
 }
 
 export type AppProcessWrapper = {
@@ -330,4 +353,5 @@ export type AppToDeskThingData = {
 
     // Music Data
     | { type: APP_REQUESTS.SONG; request?: string; payload: SongData; app?: "client" }
+    | { type: APP_REQUESTS.MESSAGE; request: 'send'; payload: NotificationMessage }
   );

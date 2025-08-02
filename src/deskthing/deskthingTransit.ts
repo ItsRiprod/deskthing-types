@@ -4,6 +4,7 @@ import { AppSettings } from "../apps/appSettings.js";
 import { Task, Step } from "../apps/appTasks.js";
 import { ClientConfigurations, Client } from "../clients/clientData.js";
 import { SongData, MusicEventPayloads } from "../meta/music.js";
+import { NotificationMessage } from "../meta/notifications.js";
 import { TimePayload } from "../meta/time.js";
 import { TransitDataExtras, GenericTransitData } from "../meta/transit.js";
 import { MappingProfile, Action, ActionReference } from "./mappings.js";
@@ -39,47 +40,47 @@ export enum DESKTHING_DEVICE {
  */
 export type DeskThingToDeviceCore = { app: 'client' } & (
   | {
-      type: DESKTHING_DEVICE.GLOBAL_SETTINGS;
-      request?: string;
-      payload: Record<string, AppSettings>;
-    }
+    type: DESKTHING_DEVICE.GLOBAL_SETTINGS;
+    request?: string;
+    payload: Record<string, AppSettings>;
+  }
   | {
-      type: DESKTHING_DEVICE.MAPPINGS;
-      request?: string;
-      payload: MappingProfile;
-    }
+    type: DESKTHING_DEVICE.MAPPINGS;
+    request?: string;
+    payload: MappingProfile;
+  }
   | {
-      type: DESKTHING_DEVICE.CONFIG;
-      request: 'set';
-      payload: ClientConfigurations;
-    }
+    type: DESKTHING_DEVICE.CONFIG;
+    request: 'set';
+    payload: ClientConfigurations;
+  }
   | { type: DESKTHING_DEVICE.GET; request: "manifest"; payload?: string }
   | { type: DESKTHING_DEVICE.ERROR; request?: string; payload?: string }
   | { type: DESKTHING_DEVICE.PONG; request?: string; payload?: string }
   | { type: DESKTHING_DEVICE.PING; request?: string; payload?: string }
   | { type: DESKTHING_DEVICE.TIME; request?: string; payload?: TimePayload }
   | {
-      type: DESKTHING_DEVICE.SETTINGS;
-      request?: string;
-      payload?: { settings: AppSettings; app: string }; 
-    }
+    type: DESKTHING_DEVICE.SETTINGS;
+    request?: string;
+    payload?: { settings: AppSettings; app: string };
+  }
   | { type: DESKTHING_DEVICE.APPS; request?: string; payload?: App[] }
   | { type: DESKTHING_DEVICE.MUSIC; request?: string; payload?: SongData }
   | {
-      type: DESKTHING_DEVICE.ICON;
-      request: "set";
-      payload?: { action: Action; icon: string; source: string };
-    }
+    type: DESKTHING_DEVICE.ICON;
+    request: "set";
+    payload?: { action: Action; icon: string; source: string };
+  }
   | {
-      type: DESKTHING_DEVICE.HEARTBEAT;
-      request?: string;
-      payload?: string;
-    }
+    type: DESKTHING_DEVICE.HEARTBEAT;
+    request?: string;
+    payload?: string;
+  }
   | {
-      type: DESKTHING_DEVICE.META_DATA;
-      request?: string;
-      payload: ClientMetaData;
-    }    
+    type: DESKTHING_DEVICE.META_DATA;
+    request?: string;
+    payload: ClientMetaData;
+  }
 )
 
 export type ClientMetaData = {
@@ -96,8 +97,24 @@ export type ClientMetaData = {
  */
 export enum DESKTHING_EVENTS {
   /**
-   * @deprecated - No longer used
-   * Raw message event from the server
+   * Sends a notification to the server
+   * Payload should be type {@link NotificationMessage}
+   *
+   * @example
+   * const result = await DeskThing.once({
+   *        type: APP_REQUESTS.MESSAGE,
+   *        request: 'send',
+   *        payload: {
+   *            id: 'myMessage',
+   *            type: "text",
+   *            title: 'My Message',
+   *            description: 'This is a message',
+   *            link: 'https://example.com'
+   *        }
+   *    }, { type: APP_REQUESTS.MESSAGE, request: 'myMessage' }
+   * )
+   * 
+   * console.log(result.payload.response) // will log the response from the user
    */
   MESSAGE = "message",
   /**
@@ -190,73 +207,73 @@ export enum DESKTHING_EVENTS {
 export type DeskThingToAppCore = TransitDataExtras & // Tasks events
   (
     | {
-        type: DESKTHING_EVENTS.TASKS;
-        request: "update";
-        payload: Record<string, Task>;
-      }
+      type: DESKTHING_EVENTS.TASKS;
+      request: "update";
+      payload: Record<string, Task>;
+    }
     | { type: DESKTHING_EVENTS.TASKS; request: "step"; payload: Step }
     | { type: DESKTHING_EVENTS.TASKS; request: "task"; payload: Task }
 
     // Client status events
     | {
-        type: DESKTHING_EVENTS.CLIENT_STATUS;
-        request: "connected";
-        payload: Client;
-      }
+      type: DESKTHING_EVENTS.CLIENT_STATUS;
+      request: "connected";
+      payload: Client;
+    }
     | {
-        type: DESKTHING_EVENTS.CLIENT_STATUS;
-        request: "connections";
-        payload: Client[];
-      }
+      type: DESKTHING_EVENTS.CLIENT_STATUS;
+      request: "connections";
+      payload: Client[];
+    }
     | {
-        type: DESKTHING_EVENTS.CLIENT_STATUS;
-        request: "disconnected";
-        payload: string;
-      }
+      type: DESKTHING_EVENTS.CLIENT_STATUS;
+      request: "disconnected";
+      payload: string;
+    }
     | {
-        type: DESKTHING_EVENTS.CLIENT_STATUS;
-        request: "opened";
-        payload: Client;
-      }
+      type: DESKTHING_EVENTS.CLIENT_STATUS;
+      request: "opened";
+      payload: Client;
+    }
     | {
-        type: DESKTHING_EVENTS.CLIENT_STATUS;
-        request: "closed";
-        payload: Client;
-      }
+      type: DESKTHING_EVENTS.CLIENT_STATUS;
+      request: "closed";
+      payload: Client;
+    }
 
     // Settings events
     | {
-        type: DESKTHING_EVENTS.SETTINGS;
-        request?: string;
-        payload: AppSettings;
-      }
+      type: DESKTHING_EVENTS.SETTINGS;
+      request?: string;
+      payload: AppSettings;
+    }
 
     // Action events
     | {
-        type: DESKTHING_EVENTS.ACTION;
-        request: string;
-        payload: Action | ActionReference;
-      }
+      type: DESKTHING_EVENTS.ACTION;
+      request: string;
+      payload: Action | ActionReference;
+    }
 
     // Message events
-    | { type: DESKTHING_EVENTS.MESSAGE; request: string; payload: string }
+    | { type: DESKTHING_EVENTS.MESSAGE; request: string; payload: NotificationMessage }
 
     // Data events
     | { type: DESKTHING_EVENTS.DATA; request?: string; payload: SavedData }
 
     // AppData events
     | {
-        type: DESKTHING_EVENTS.APPDATA;
-        request?: string;
-        payload: AppDataInterface;
-      }
+      type: DESKTHING_EVENTS.APPDATA;
+      request?: string;
+      payload: AppDataInterface;
+    }
 
     // Callback events
     | {
-        type: DESKTHING_EVENTS.CALLBACK_DATA;
-        request?: string;
-        payload: string;
-      }
+      type: DESKTHING_EVENTS.CALLBACK_DATA;
+      request?: string;
+      payload: string;
+    }
 
     // Start events
     | { type: DESKTHING_EVENTS.START; request?: string; payload?: string }
@@ -269,10 +286,10 @@ export type DeskThingToAppCore = TransitDataExtras & // Tasks events
 
     // Input events
     | {
-        type: DESKTHING_EVENTS.INPUT;
-        request: string;
-        payload: Record<string, string>;
-      }
+      type: DESKTHING_EVENTS.INPUT;
+      request: string;
+      payload: Record<string, string>;
+    }
 
     // Config events
     | { type: DESKTHING_EVENTS.CONFIG; request?: string; payload: any }
