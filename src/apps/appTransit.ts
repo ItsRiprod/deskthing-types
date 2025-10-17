@@ -1,13 +1,15 @@
+import { Buffer } from "buffer"
 import { DeskThingToAppData } from "../deskthing/deskthingTransit.js"
 import { Key, EventMode, Action } from "../deskthing/mappings.js"
+import { AgentMessage } from "../deskthing/voiceAgent.js"
 import { Log, LOGGING_LEVELS } from "../meta/logging.js"
 import { SongData } from "../meta/music.js"
 import { NotificationMessage } from "../meta/notifications.js"
-import { GenericTransitData, TransitData } from "../meta/transit.js"
+import { GenericTransitData } from "../meta/transit.js"
 import { AppDataInterface } from "./appData.js"
 import { AuthScopes } from "./appDeprecated.js"
 import { SavedData } from "./appInstance.js"
-import { AppSettings } from "./appSettings.js"
+import { AppSettings, SettingOption } from "./appSettings.js"
 import { Task, Step } from "./appTasks.js"
 
 
@@ -187,6 +189,21 @@ export enum APP_REQUESTS { // v0.10.4.2
    * console.log(result.payload.response) // will log the response from the user
    */
   MESSAGE = "message",
+
+
+  /**
+   * Added in v0.11.17 and requires having the AGENT flag and being configured as an agent
+   * 
+   * Used to send messages to the voice agent system
+   * Payload should be type {@link AgentMessage}
+   * 
+   */
+  AGENT = "agent",
+
+  /**
+   * All setting-related CRUD operations. The rest are now deprecated in favor of using the AppSettings API
+   */
+  SETTINGS = "settings"
 }
 
 export type AppProcessWrapper = {
@@ -200,7 +217,11 @@ export type AppProcessWrapper = {
 export type AppProcessData<T extends GenericTransitData = never> = AppProcessWrapper &
   (
     | { type: "data"; payload: AppToDeskThingData | T }
-    | { type: "binary"; payload: BufferSource }
+    | { type: "binary"; payload: {
+      payload: ArrayBuffer
+      clientId?: string
+      app: string
+    } }
     | { type: "started" }
     | { type: "stopped"; reason?: string }
     | { type: "server:error"; payload: Error }
@@ -239,16 +260,25 @@ export type AppToDeskThingData = {
     | { type: APP_REQUESTS.SET; request: "settings-init"; payload: AppSettings }
     | { type: APP_REQUESTS.SET; request: "data"; payload: SavedData }
     | { type: APP_REQUESTS.SET; request: "appData"; payload: AppDataInterface }
-
+    
     // DELETE requests
     | { type: APP_REQUESTS.DELETE; request: "settings"; payload: string | string[] }
     | { type: APP_REQUESTS.DELETE; request: "data"; payload: string | string[] }
+    
+    // Setting operations
+    | { type: APP_REQUESTS.SETTINGS; request: "init"; payload: AppSettings }
+    | { type: APP_REQUESTS.SETTINGS; request: "set"; payload: AppSettings }
+    | { type: APP_REQUESTS.SETTINGS; request: "get"; payload?: never }
+    | { type: APP_REQUESTS.SETTINGS; request: "set-value"; payload: { key: string; value: any } }
+    | { type: APP_REQUESTS.SETTINGS; request: "set-options"; payload: { key: string; value: SettingOption[] } }
+    | { type: APP_REQUESTS.SETTINGS; request: "delete"; payload: string | string[] }    
 
     // OPEN requests
     | { type: APP_REQUESTS.OPEN; request?: string; payload: string }
 
     // SEND requests (to client)
-    | { type: APP_REQUESTS.SEND; request?: string; payload: GenericTransitData }
+    | { type: APP_REQUESTS.SEND; request: 'json'; payload: GenericTransitData }
+    | { type: APP_REQUESTS.SEND; request: 'binary'; payload: ArrayBuffer }
 
     // TOAPP requests
     | { type: APP_REQUESTS.TOAPP; request: string; payload: any }
@@ -350,8 +380,29 @@ export type AppToDeskThingData = {
       request: "restart";
       payload: { taskId: string; stepId: string };
     }
-
+    
     // Music Data
     | { type: APP_REQUESTS.SONG; request?: string; payload: SongData; app?: "client" }
     | { type: APP_REQUESTS.MESSAGE; request: 'send'; payload: NotificationMessage }
+    | {
+      type: APP_REQUESTS.AGENT;
+      request: "response";
+      payload: AgentMessage & { clientId: string }; // assert that you need the client id to be present
+    }
+    | {
+      type: APP_REQUESTS.AGENT;
+      request: "token";
+      /** The token that should be appended */
+      payload: { messageId: string; token: string; clientId: string }; // assert that you need the client id to be present
+    }
+    | {
+      type: APP_REQUESTS.AGENT;
+      request: "disconnect";
+      payload?: string;
+    }
+    | {
+      type: APP_REQUESTS.AGENT;
+      request: "context";
+      payload?: (AgentMessage & { clientId: string })[]; // this should delete the existing client context and replace with this
+    }
   );

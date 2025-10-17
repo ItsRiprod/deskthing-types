@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { App, AppDataInterface } from "../apps/appData.js";
 import { SavedData } from "../apps/appInstance.js";
 import { AppSettings } from "../apps/appSettings.js";
@@ -8,6 +9,7 @@ import { NotificationMessage } from "../meta/notifications.js";
 import { TimePayload } from "../meta/time.js";
 import { TransitDataExtras, GenericTransitData } from "../meta/transit.js";
 import { MappingProfile, Action, ActionReference } from "./mappings.js";
+import { AgentMessage } from "./voiceAgent.js";
 
 /**
  * All data that is sent from the DeskThing Server to the Client
@@ -24,6 +26,8 @@ export enum DESKTHING_DEVICE {
   GET = "get",
   /** Will never be emitted to your client. Only exists on device */
   ERROR = "error",
+  /** Will never be emitted to your client. Only exists on device. This will hold the agent message or related info */
+  AGENT = "agent",
   PONG = "pong",
   PING = "ping",
   SETTINGS = "settings",
@@ -81,6 +85,26 @@ export type DeskThingToDeviceCore = { app: 'client' } & (
     request?: string;
     payload: ClientMetaData;
   }
+  | {
+    type: DESKTHING_DEVICE.AGENT;
+    request: 'response';
+    payload: AgentMessage;
+  }
+  | {
+    type: DESKTHING_DEVICE.AGENT;
+    request: 'disconnect';
+    payload?: string;
+  }
+  | {
+    type: DESKTHING_DEVICE.AGENT;
+    request: "context";
+    payload: (AgentMessage & { clientId: string })[]; // this should delete the existing client context and replace with this
+  }
+  | {
+    type: DESKTHING_DEVICE.AGENT;
+    request: "token";
+    payload: { messageId: string; token: string; clientId: string }; // this should delete the existing client context and replace with this
+  }
 )
 
 export type ClientMetaData = {
@@ -123,6 +147,16 @@ export enum DESKTHING_EVENTS {
    * @remark Does not trigger when settings update. Use {@link DESKTHING_EVENTS.SETTINGS} instead
    * */
   DATA = "data",
+  /**
+   * @since 0.11.17
+   * Binary data packets sent from the frontend client
+   * 
+   * */
+  BINARY = "binary",
+  /**
+   * Binary packets of audio data from the voice assistant functionality or other audio-related features
+   * */
+  AGENT = "agent",
   /**
    * The full appDataInterface object
    * Triggered whenever data is updated on the server
@@ -273,6 +307,55 @@ export type DeskThingToAppCore = TransitDataExtras & // Tasks events
       type: DESKTHING_EVENTS.CALLBACK_DATA;
       request?: string;
       payload: string;
+    }
+    | {
+      type: DESKTHING_EVENTS.BINARY;
+      request?: string
+      payload: ArrayBuffer;
+      clientId: string; // clientID is required
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'binary';
+      payload: ArrayBuffer;
+      clientId: string; // assert that a clientID MUST Be included in this request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'text';
+      payload: string;
+      clientId: string; // assert that a clientID MUST be included in request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'start';
+      payload?: string;
+      clientId: string; // assert that a clientID MUST be included in request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'end';
+      payload?: string;
+      clientId: string; // assert that a clientID MUST be included in request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'clear';
+      payload?: string;
+      clientId: string; // assert that a clientID MUST be included in request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'delete';
+      /** MessageID to delete and start context from */
+      payload: string;
+      clientId: string; // assert that a clientID MUST be included in request
+    }
+    | {
+      type: DESKTHING_EVENTS.AGENT;
+      request: 'fetch';
+      payload?: string;
+      clientId: string; // assert that a clientID MUST be included in request
     }
 
     // Start events

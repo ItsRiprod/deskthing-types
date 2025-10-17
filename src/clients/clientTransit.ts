@@ -42,21 +42,21 @@ export type ClientToDeviceCore = {
     | { type: CLIENT_REQUESTS.GET; request: "apps"; payload?: string }
     | { type: CLIENT_REQUESTS.GET; request: "key"; payload: KeyReference }
     | {
-        type: CLIENT_REQUESTS.GET;
-        request: "action";
-        payload: Action | ActionReference;
-      }
+      type: CLIENT_REQUESTS.GET;
+      request: "action";
+      payload: Action | ActionReference;
+    }
     | {
-        type: CLIENT_REQUESTS.ACTION;
-        request?: undefined;
-        payload: Action | ActionReference;
-      }
+      type: CLIENT_REQUESTS.ACTION;
+      request?: undefined;
+      payload: Action | ActionReference;
+    }
     | { type: CLIENT_REQUESTS.KEY; request?: string; payload: KeyReference }
     | {
-        type: CLIENT_REQUESTS.LOG;
-        request: LOGGING_LEVELS;
-        payload?: { message: string; data?: any[] };
-      }
+      type: CLIENT_REQUESTS.LOG;
+      request: LOGGING_LEVELS;
+      payload?: { message: string; data?: any[] };
+    }
   );
 
 /**
@@ -80,28 +80,28 @@ export type DeviceToClientCore = {
   app: 'client';
 } & (
     | {
-        type: DEVICE_CLIENT.MANIFEST;
-        request?: string;
-        payload: ClientManifest;
-      }
+      type: DEVICE_CLIENT.MANIFEST;
+      request?: string;
+      payload: ClientManifest;
+    }
     | { type: DEVICE_CLIENT.MUSIC; request?: string; payload: SongData }
     | {
-        type: DEVICE_CLIENT.SETTINGS;
-        request?: string;
-        payload: AppSettings & { app?: string };
-      }
+      type: DEVICE_CLIENT.SETTINGS;
+      request?: string;
+      payload: AppSettings & { app?: string };
+    }
     | { type: DEVICE_CLIENT.APPS; request?: string; payload: App[] }
     | { type: DEVICE_CLIENT.ACTION; request?: string; payload: Action }
     | {
-        type: DEVICE_CLIENT.TIME;
-        request: "set";
-        payload: string | TimePayload;
-      }
+      type: DEVICE_CLIENT.TIME;
+      request: "set";
+      payload: string | TimePayload;
+    }
     | {
-        type: DEVICE_CLIENT.ICON;
-        request: "set";
-        payload: { action: Action; icon: string; source: string };
-      }
+      type: DEVICE_CLIENT.ICON;
+      request: "set";
+      payload: { action: Action; icon: string; source: string };
+    }
   );
 
 export enum DEVICE_DESKTHING {
@@ -121,6 +121,8 @@ export enum DEVICE_DESKTHING {
   VIEW = "view",
   /** Payloads intended for apps */
   APP_PAYLOAD = "app_payload",
+  /** Audio-Related Payloads */
+  AUDIO = "audio",
   /** Getters / setters for the current manifest */
   MANIFEST = "manifest",
   /** Getters / setters for the current settings */
@@ -141,64 +143,96 @@ export type DeviceToClientData = DeviceToClientCore
  */
 export type DeviceToDeskthingData = { deviceId?: string } & (
   | ({ app: "client" } & {
-      type: DEVICE_DESKTHING.PING | DEVICE_DESKTHING.PONG;
-    })
+    type: DEVICE_DESKTHING.PING | DEVICE_DESKTHING.PONG;
+  })
   | ({ app: "server" } & (
-      | {
-          type: DEVICE_DESKTHING.SET;
-          request: "update_pref_index";
-          payload: { app: string; index: number };
-        }
-      | {
-          type: DEVICE_DESKTHING.GET;
-          request: "initialData";
-        }
-      | {
-          type: DEVICE_DESKTHING.ACTION;
-          request?: string;
-          payload: Action | ActionReference;
-        }
-      | {
-          type: DEVICE_DESKTHING.MANIFEST;
-          request?: string;
-          payload: ClientManifest;
-        }
-      | { type: DEVICE_DESKTHING.PING | DEVICE_DESKTHING.PONG }
-      | { type: DEVICE_DESKTHING.LOG; request?: string; payload: Log }
-      | {
-          type: DEVICE_DESKTHING.VIEW;
-          request?: "change";
-          payload: { currentApp: string; previousApp: string };
-        }
-      | {
-          type: DEVICE_DESKTHING.CONFIG;
-          request: "set";
-          payload: ClientConfigurations
-        }
-      | {
-          type: DEVICE_DESKTHING.CONFIG;
-          request: "get";
-          /** Profile ID */
-          payload?: string
-        }
-    ))
+    | {
+      type: DEVICE_DESKTHING.SET;
+      request: "update_pref_index";
+      payload: { app: string; index: number };
+    }
+    | {
+      type: DEVICE_DESKTHING.GET;
+      request: "initialData";
+    }
+    | {
+      type: DEVICE_DESKTHING.ACTION;
+      request?: string;
+      payload: Action | ActionReference;
+    }
+    | {
+      type: DEVICE_DESKTHING.MANIFEST;
+      request?: string;
+      payload: ClientManifest;
+    }
+    | { type: DEVICE_DESKTHING.PING | DEVICE_DESKTHING.PONG }
+    | { type: DEVICE_DESKTHING.LOG; request?: string; payload: Log }
+    | {
+      type: DEVICE_DESKTHING.VIEW;
+      request?: "change";
+      payload: { currentApp: string; previousApp: string };
+    }
+    | {
+      type: DEVICE_DESKTHING.CONFIG;
+      request: "set";
+      payload: ClientConfigurations
+    }
+    | {
+      type: DEVICE_DESKTHING.CONFIG;
+      request: "get";
+      /** Profile ID */
+      payload?: string
+    }
+    | {
+      type: DEVICE_DESKTHING.AUDIO;
+      request: "start";
+      /** Nothing */
+      payload?: string
+    }
+    | {
+      type: DEVICE_DESKTHING.AUDIO;
+      request: "end";
+      /** Nothing */
+      payload?: string
+    }
+    | {
+      type: DEVICE_DESKTHING.AUDIO;
+      /** clears the current agent context */
+      request: "clear";
+      /** Nothing */
+      payload?: string
+    }
+    | {
+      type: DEVICE_DESKTHING.AUDIO;
+      /** Fetches the current conversation */
+      request: "fetch";
+      /** Nothing */
+      payload?: string
+    }
+    | {
+      type: DEVICE_DESKTHING.AUDIO;
+      request: "delete";
+      /** messageId to delete and start the context from */
+      payload: string
+    }
+  ))
   | MusicEventPayloads
   | ({ app: string } & (
-      | {
-          type: DEVICE_DESKTHING.ACTION;
-          request?: string;
-          payload: Action | ActionReference;
-        }
-      | {
-          type: DEVICE_DESKTHING.SETTINGS;
-          request: "update";
-          payload: { id: string; value: SettingsType["value"] };
-        }
-      | {
-          type: DEVICE_DESKTHING.SETTINGS;
-          request: "set";
-          payload: AppSettings;
-        }
-      | { type: DEVICE_DESKTHING.APP_PAYLOAD; payload?: GenericTransitData }
-    ))
+    | {
+      type: DEVICE_DESKTHING.ACTION;
+      request?: string;
+      payload: Action | ActionReference;
+    }
+    | {
+      type: DEVICE_DESKTHING.SETTINGS;
+      request: "update";
+      payload: { id: string; value: SettingsType["value"] };
+    }
+    | {
+      type: DEVICE_DESKTHING.SETTINGS;
+      request: "set";
+      payload: AppSettings;
+    }
+    | { type: DEVICE_DESKTHING.APP_PAYLOAD; payload?: GenericTransitData }
+  ))
 );

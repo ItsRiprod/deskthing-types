@@ -72,11 +72,11 @@ export type AppManifest = {
   /**@deprecated */
   isAudioSource?: boolean;
   /**@deprecated */
-  isScreenSaver?: boolean;
+  isScreenSaver?: boolean
   /**@deprecated */
-  isLocalApp?: boolean;
+  isLocalApp?: boolean
   /**@deprecated */
-  isWebApp?: boolean;
+  isWebApp?: boolean
 };
 
 /**
@@ -87,6 +87,7 @@ export enum TagTypes {
   SCREEN_SAVER = "screensaver",
   UTILITY_ONLY = "utilityOnly",
   WEB_APP_ONLY = "webappOnly",
+  AUDIO_AGENT = 'audioagent'
 }
 
 /**

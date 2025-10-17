@@ -41,6 +41,7 @@ export enum ProviderCapabilities {
   CONFIGURE = 0,
   PING = 1,
   COMMUNICATE = 2,
+  BINARY = 3,
 }
 
 /**
