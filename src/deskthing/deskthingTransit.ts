@@ -1,4 +1,3 @@
-import { Buffer } from "buffer";
 import { App, AppDataInterface } from "../apps/appData.js";
 import { SavedData } from "../apps/appInstance.js";
 import { AppSettings } from "../apps/appSettings.js";

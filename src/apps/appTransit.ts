@@ -1,4 +1,3 @@
-import { Buffer } from "buffer"
 import { DeskThingToAppData } from "../deskthing/deskthingTransit.js"
 import { Key, EventMode, Action } from "../deskthing/mappings.js"
 import { AgentMessage } from "../deskthing/voiceAgent.js"
