@@ -11,29 +11,47 @@ export enum PluginApplications {
 
 export type PluginEntrypoints = {
     [PluginApplications.SERVER]?: {
-        /** script/binary to execute (server-side) */
-        script?: string
+        /** fileName/binary to execute (server-side) */
+        fileName: string
+        /** Whether or not the plugin is able to be run multiple times in a row */
+        isRepeatable?: boolean
+        /** Whether or not the plugin has to be re-run every time or if just once is enough */
+        persistent?: boolean
     }
     [PluginApplications.CLIENT]?: {
         /** path inside the plugin package or absolute path to a Node/Electron bundle */
-        module: string
+        fileName: string
         /** Whether the module should be loaded lazily */
         lazy?: boolean
+        /** Whether or not the plugin is able to be run multiple times in a row */
+        isRepeatable?: boolean
+        /** Whether or not the plugin has to be re-run every time or if just once is enough */
+        persistent?: boolean
     }
     [PluginApplications.ADB]?: {
-        /** The script location / where to run the script */
-        script: string
+        /** The fileName location / where to run the fileName */
+        fileName: string
+        /** Whether or not the plugin is able to be run multiple times in a row */
+        isRepeatable?: boolean
+        /** Whether or not the plugin has to be re-run every time or if just once is enough */
+        persistent?: boolean
     }
     [PluginApplications.BLUETOOTH]?: {
         /** Bluetooth implementation pending... */
-        tbd?: undefined
+        fileName: string
+        /** Whether or not the plugin is able to be run multiple times in a row */
+        isRepeatable?: boolean
+        /** Whether or not the plugin has to be re-run every time or if just once is enough */
+        persistent?: boolean
     }
 }
 
 export type PluginManifest = {
     // meta information
-    /** Semver of the plugin */
+    /** Semver of the plugin  */
     version: string
+    /** Metadata version of the plugin (for compatibility)  */
+    plugin_version: string
     /** Required semver versions for compatibility - missing means DNA */
     required: {
         server?: string
@@ -45,17 +63,13 @@ export type PluginManifest = {
 
     // Plugin-specific information
     entrypoints?: PluginEntrypoints
-    /** Whether or not the plugin is able to be run multiple times in a row */
-    isRepeatable?: boolean
-    /** Whether or not the plugin has to be re-run every time or if just once is enough */
-    persistent?: boolean
 
     // any additional info
 
     pkg?: {
         /** path to plugin root on disk (filled by server when installed) */
         root?: string
-        integrity?: string
+        integrity?: Record<string, string>
     }
 
     // Display information

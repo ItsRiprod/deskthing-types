@@ -1,6 +1,7 @@
 /** Server plugins are not yet implemented */
 export interface ServerPluginInterface {
     install(): Promise<void>;
+    uninstall(): Promise<void>;
 }
 
 export type ADBPluginDetails = {
@@ -10,8 +11,6 @@ export type ADBPluginDetails = {
     adbId: string;
     /* The client ID this plugin is being installed for */
     clientId: string;
-    /* The client version this plugin is being installed for */
-    clientVersion: string;
 }
 
 /** The interface for ADB plugins. Documentation is pending for this service/app */
@@ -25,7 +24,6 @@ export type ClientPluginMountOptions = {
     pluginDir?: string;
     /** Optional client identifiers/metadata */
     clientId?: string;
-    clientVersion?: string;
     adbId?: string;
 }
 
@@ -38,12 +36,12 @@ export interface ClientPluginInterface {
      * Called when the host mounts the plugin into the DOM. The plugin should
      * render itself inside `root`. Return a Promise if asynchronous work is required.
      */
-    mount(root: HTMLElement, options?: ClientPluginMountOptions): void | Promise<void>;
+    install(root: HTMLElement, options?: ClientPluginMountOptions): void | Promise<void>;
 
     /**
      * Optional cleanup called when the host unmounts the plugin.
      */
-    unmount?(root?: HTMLElement): void | Promise<void>;
+    uninstall?(root?: HTMLElement): void | Promise<void>;
 
     /** Optional metadata the host can read without instantiating the plugin */
     name?: string;
@@ -53,4 +51,8 @@ export interface ClientPluginInterface {
 /** Typical ESM module shape the host will import */
 export type ClientPluginModule = {
     default: ClientPluginInterface;
+}
+
+export interface BluetoothPluginInterface {
+    // Bluetooth plugin methods to be defined
 }
